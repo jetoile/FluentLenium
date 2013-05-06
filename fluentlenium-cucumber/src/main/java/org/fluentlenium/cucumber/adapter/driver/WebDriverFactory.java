@@ -13,15 +13,19 @@
  */
 package org.fluentlenium.cucumber.adapter.driver;
 
+import org.browsermob.proxy.ProxyServer;
 import org.fluentlenium.cucumber.adapter.FluentCucumberAdapter;
 import org.fluentlenium.cucumber.adapter.exception.UnsupportedDriverException;
+import org.fluentlenium.cucumber.adapter.util.HarStorageShutdownHook;
 import org.fluentlenium.cucumber.adapter.util.SharedDriverHelper;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -34,6 +38,32 @@ public class WebDriverFactory {
     private static Map<SupportedWebDriver, WebDriver> webDriverInstances = new HashMap<SupportedWebDriver, WebDriver>();
 
     public static synchronized WebDriver newWebdriverInstance(FluentCucumberAdapter adapter, SupportedWebDriver driverType, DesiredCapabilities capabilities) throws UnsupportedDriverException {
+        String proxyApiPort = (String) capabilities.getCapability("harstorage.api.proxy.port");
+        String recordingName = (String) capabilities.getCapability("harstorage.recording.name");
+
+        if (adapter.isHarStorageDecorated()) {
+            ProxyServer harStorageServer = new ProxyServer(Integer.valueOf(proxyApiPort));
+            try {
+                harStorageServer.start();
+                Proxy proxy = harStorageServer.seleniumProxy();
+                capabilities.setCapability(CapabilityType.PROXY, proxy);
+            } catch (Exception e) {
+                e.printStackTrace();
+                //TODO
+            }
+
+            //force driver name to firefox
+            capabilities.setBrowserName(SupportedWebDriver.FIREFOX.getName());
+
+            if (driverType != SupportedWebDriver.FIREFOX && driverType != SupportedWebDriver.REMOTE) {
+                //force to local firefoxDriver
+                driverType = SupportedWebDriver.FIREFOX;
+            }
+
+            harStorageServer.newHar(recordingName);
+            Runtime.getRuntime().addShutdownHook(new HarStorageShutdownHook("fluentLenium-harStorage", harStorageServer, capabilities));
+        }
+
         if (SharedDriverHelper.isSharedDriverPerFeature(adapter.getClass())) {
             if (webDriverInstances.get(driverType) == null) {
                 webDriverInstances.put(driverType, getWebDriver(driverType, capabilities));
@@ -65,6 +95,8 @@ public class WebDriverFactory {
     }
 
     private static WebDriver remoteDriver(DesiredCapabilities capabilities) throws UnsupportedDriverException {
+        capabilities.setBrowserName((String) capabilities.getCapability("browser.name"));
+
         String osName =  (String) capabilities.getCapability("os.name");
 
         capabilities.setPlatform(Platform.extractFromSysProperty(osName, ""));

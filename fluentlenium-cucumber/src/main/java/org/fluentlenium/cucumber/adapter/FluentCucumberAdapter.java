@@ -13,6 +13,7 @@
  */
 package org.fluentlenium.cucumber.adapter;
 
+import org.browsermob.proxy.ProxyServer;
 import org.fluentlenium.core.Fluent;
 import org.fluentlenium.core.FluentAdapter;
 import org.fluentlenium.cucumber.adapter.util.SharedDriverHelper;
@@ -24,6 +25,18 @@ public class FluentCucumberAdapter extends FluentAdapter {
     private static WebDriver sharedDriver = null;
     private Mode snapshotMode = Mode.NEVER_TAKE_SNAPSHOT;
     private String snapshotPath;
+
+    //does not use a specific adapter decorator because the recording could use existing steps
+    //TODO : using firefox only? Overriding all parameters but remote
+    private boolean isHarStorageDecored;
+
+    public boolean isHarStorageDecorated() {
+        return isHarStorageDecored;
+    }
+
+    public void setHarStorageDecorated(boolean harStorageDecorator) {
+        isHarStorageDecored = harStorageDecorator;
+    }
 
     public void setSnapshotPath(String path) {
         this.snapshotPath = path;
