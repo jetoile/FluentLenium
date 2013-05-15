@@ -36,21 +36,26 @@ import java.util.Map;
 
 public class WebDriverFactory {
     private static Map<SupportedWebDriver, WebDriver> webDriverInstances = new HashMap<SupportedWebDriver, WebDriver>();
+    
+    private static ProxyServer harStorageServer;
 
     public static synchronized WebDriver newWebdriverInstance(FluentCucumberAdapter adapter, SupportedWebDriver driverType, DesiredCapabilities capabilities) throws UnsupportedDriverException {
         String proxyApiPort = (String) capabilities.getCapability("harstorage.api.proxy.port");
         String recordingName = (String) capabilities.getCapability("harstorage.recording.name");
 
         if (adapter.isHarStorageDecorated()) {
-            ProxyServer harStorageServer = new ProxyServer(Integer.valueOf(proxyApiPort));
-            try {
-                harStorageServer.start();
-                Proxy proxy = harStorageServer.seleniumProxy();
-                capabilities.setCapability(CapabilityType.PROXY, proxy);
-            } catch (Exception e) {
-                e.printStackTrace();
-                //TODO
-            }
+            if (harStorageServer == null) {
+                harStorageServer = new ProxyServer(Integer.valueOf(proxyApiPort));
+				try {
+				harStorageServer.start();
+
+					Proxy proxy = harStorageServer.seleniumProxy();
+					capabilities.setCapability(CapabilityType.PROXY, proxy);
+				} catch (Exception e) {
+					e.printStackTrace();
+					//TODO
+				}
+			}
 
             //force driver name to firefox
             capabilities.setBrowserName(SupportedWebDriver.FIREFOX.getName());
