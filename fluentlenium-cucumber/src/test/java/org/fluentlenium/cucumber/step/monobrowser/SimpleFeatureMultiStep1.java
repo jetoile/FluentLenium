@@ -19,6 +19,10 @@ import org.fluentlenium.core.annotation.Page;
 import org.fluentlenium.cucumber.adapter.FluentCucumberAdapter;
 import org.fluentlenium.cucumber.adapter.util.SharedDriver;
 import org.fluentlenium.cucumber.page.LocalPage;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fluentlenium.core.filter.FilterConstructor.withName;
@@ -29,15 +33,12 @@ public class SimpleFeatureMultiStep1 extends FluentCucumberAdapter {
     @Page
     LocalPage page;
 
-
     @Given(value = "feature multi1 I am on the first page")
     public void step1() {
-//        this.initFluent(SimpleFeatureMultiStep1.class);
         this.initFluent();
         this.initTest();
 
         goTo(page);
-        assertThat($(".small", withName("name"))).hasSize(1);
     }
 
     @After

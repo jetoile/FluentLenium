@@ -36,7 +36,6 @@ import java.util.Map;
 
 public class WebDriverFactory {
     private static Map<SupportedWebDriver, WebDriver> webDriverInstances = new HashMap<SupportedWebDriver, WebDriver>();
-    
     private static ProxyServer harStorageServer;
 
     public static synchronized WebDriver newWebdriverInstance(FluentCucumberAdapter adapter, SupportedWebDriver driverType, DesiredCapabilities capabilities) throws UnsupportedDriverException {
@@ -45,17 +44,16 @@ public class WebDriverFactory {
 
         if (adapter.isHarStorageDecorated()) {
             if (harStorageServer == null) {
-                harStorageServer = new ProxyServer(Integer.valueOf(proxyApiPort));
-				try {
-				harStorageServer.start();
-
-					Proxy proxy = harStorageServer.seleniumProxy();
-					capabilities.setCapability(CapabilityType.PROXY, proxy);
-				} catch (Exception e) {
-					e.printStackTrace();
-					//TODO
-				}
-			}
+                try {
+                    harStorageServer = new ProxyServer(Integer.valueOf(proxyApiPort));
+                    harStorageServer.start();
+                    Proxy proxy = harStorageServer.seleniumProxy();
+                    capabilities.setCapability(CapabilityType.PROXY, proxy);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //TODO
+                }
+            }
 
             //force driver name to firefox
             capabilities.setBrowserName(SupportedWebDriver.FIREFOX.getName());
@@ -102,12 +100,12 @@ public class WebDriverFactory {
     private static WebDriver remoteDriver(DesiredCapabilities capabilities) throws UnsupportedDriverException {
         capabilities.setBrowserName((String) capabilities.getCapability("browser.name"));
 
-        String osName =  (String) capabilities.getCapability("os.name");
+        String osName = (String) capabilities.getCapability("os.name");
 
         capabilities.setPlatform(Platform.extractFromSysProperty(osName, ""));
         capabilities.setVersion((String) capabilities.getCapability("os.version"));
 
-        String url =  (String) capabilities.getCapability("webdriver.remote.url");
+        String url = (String) capabilities.getCapability("webdriver.remote.url");
         try {
             return new RemoteWebDriver(new URL(url), capabilities);
         } catch (MalformedURLException e) {

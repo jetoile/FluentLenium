@@ -14,14 +14,19 @@
 package org.fluentlenium.cucumber;
 
 import cucumber.api.junit.Cucumber;
+import org.fluentlenium.cucumber.adapter.FluentCucumberAdapter;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 /**
  * @author : Mathilde Lemee
  */
 @RunWith(Cucumber.class)
-@Cucumber.Options(features = "classpath:org/fluentlenium/cucumber/multibrowser", format = {"pretty", "html:target/cucumber", "json:target/cucumber_multi.json"})
+@Cucumber.Options(features = "classpath:org/fluentlenium/cucumber/multibrowser", format = {"pretty", "html:target/cucumber-multi", "json:target/cucumber_multi.json"})
 public class MultiRunner {
 
-
+    @BeforeClass
+    public static void setup() {
+        FluentCucumberAdapter.sharedDriver = null;
+    }
 }

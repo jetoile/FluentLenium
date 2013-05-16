@@ -31,11 +31,9 @@ public class SimpleScenarioMultiStep1 extends FluentCucumberAdapter {
 
     @Given(value = "scenario multi1 I am on the first page")
     public void step1() {
-//		this.initFluent(SimpleScenarioMultiStep1.class);
 		this.initFluent();
 		this.initTest();
 		goTo(page);
-		assertThat($(".small", withName("name"))).hasSize(1);
     }
 
     @After

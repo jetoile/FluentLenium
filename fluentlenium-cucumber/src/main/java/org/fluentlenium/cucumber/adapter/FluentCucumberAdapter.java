@@ -22,7 +22,7 @@ import org.openqa.selenium.WebDriver;
 
 public class FluentCucumberAdapter extends FluentAdapter {
     public static boolean isSharedDriverPerScenario;
-    private static WebDriver sharedDriver = null;
+    public static WebDriver sharedDriver = null;
     private Mode snapshotMode = Mode.NEVER_TAKE_SNAPSHOT;
     private String snapshotPath;
 
@@ -74,7 +74,7 @@ public class FluentCucumberAdapter extends FluentAdapter {
                 }
             }
         } else {
-            initFluentFromDefaultDriver();
+            throw new IllegalArgumentException("an annotation should have been set...");
         }
         return this;
     }
@@ -89,7 +89,6 @@ public class FluentCucumberAdapter extends FluentAdapter {
         sharedDriver = getDriver();
     }
 
-//    protected Fluent initFluent(final Class clazz) {
     protected Fluent initFluent() {
         return initFluentWithWebDriver(this);
     }

@@ -131,6 +131,7 @@
                     <includes>
                         <include>**/BasicRunner.java</include>
                         <include>**/MultiRunner.java</include>
+                        <include>**/HarStorageRunner.java</include>
                     </includes>
                 </configuration>
             </plugin>

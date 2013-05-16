@@ -21,6 +21,10 @@ import org.fluentlenium.cucumber.adapter.FluentCucumberAdapter;
 import org.fluentlenium.cucumber.adapter.util.SharedDriver;
 import org.fluentlenium.cucumber.page.LocalPage;
 import org.fluentlenium.cucumber.page.LocalPage2;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -32,7 +36,6 @@ public class SimpleFeatureMultiStep2 extends FluentCucumberAdapter {
 
     @When(value = "feature multi2 I click on next page")
     public void step2() {
-//        this.initFluent(SimpleFeatureMultiStep2.class);
         this.initFluent();
         this.initTest();
 
@@ -41,7 +44,6 @@ public class SimpleFeatureMultiStep2 extends FluentCucumberAdapter {
 
     @Then(value = "feature multi2 I am on the second page")
     public void step3() {
-//        this.initFluent(SimpleFeatureMultiStep2.class);
         this.initFluent();
         this.initTest();
 

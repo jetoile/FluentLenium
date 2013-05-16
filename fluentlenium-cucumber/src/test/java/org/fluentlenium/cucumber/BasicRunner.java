@@ -14,6 +14,8 @@
 package org.fluentlenium.cucumber;
 
 import cucumber.api.junit.Cucumber;
+import org.fluentlenium.cucumber.adapter.FluentCucumberAdapter;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 /**
@@ -23,5 +25,9 @@ import org.junit.runner.RunWith;
 @Cucumber.Options(features = "classpath:org/fluentlenium/cucumber/monobrowser", format = {"pretty", "html:target/cucumber", "json:target/cucumber.json"})
 public class BasicRunner {
 
+    @BeforeClass
+    public static void setup() {
+        FluentCucumberAdapter.sharedDriver = null;
+    }
 
 }

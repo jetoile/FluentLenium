@@ -14,14 +14,28 @@
 package org.fluentlenium.cucumber;
 
 import cucumber.api.junit.Cucumber;
+import org.fluentlenium.cucumber.adapter.FluentCucumberAdapter;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 /**
  * @author : Mathilde Lemee
  */
 @RunWith(Cucumber.class)
-@Cucumber.Options(features = "classpath:org/fluentlenium/cucumber/harstorage", format = {"pretty", "html:target/cucumber", "json:target/cucumber_multi.json"})
+@Cucumber.Options(features = "classpath:org/fluentlenium/cucumber/harstorage", format = {"pretty", "html:target/cucumber-har", "json:target/cucumber_har.json"})
 public class HarStorageRunner {
 
+    @BeforeClass
+    public static void setup() {
+        FluentCucumberAdapter.sharedDriver = null;
+    }
 
+//    @AfterClass
+//    public static void tearDown() {
+//        if (FluentCucumberAdapter.sharedDriver != null) {
+//        FluentCucumberAdapter.sharedDriver.quit();
+//        FluentCucumberAdapter.sharedDriver = null;
+//        }
+//    }
 }

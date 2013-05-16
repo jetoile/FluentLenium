@@ -38,7 +38,6 @@ public class MultiScenarioMultiStep1 extends FluentCucumberAdapter {
         this.initTest();
 
         goTo(page);
-//        assertThat($(".small", withName("name"))).hasSize(1);
     }
 
     @After

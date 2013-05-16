@@ -41,7 +41,6 @@ public class MultiScenarioStep extends FluentCucumberAdapter {
         this.initTest();
 
         goTo(page);
-//        assertThat($(".small", withName("name"))).hasSize(1);
     }
 
     @When(value = "multiscenario I click on next page")
