@@ -29,8 +29,8 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +48,7 @@ public class WebDriverFactory {
                     harStorageServer = new ProxyServer(Integer.valueOf(proxyApiPort));
                     harStorageServer.start();
                     Proxy proxy = harStorageServer.seleniumProxy();
+                    proxy.setHttpProxy(getIp() + ":" + proxyApiPort);
                     capabilities.setCapability(CapabilityType.PROXY, proxy);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -76,6 +77,25 @@ public class WebDriverFactory {
             return getWebDriver(driverType, capabilities);
         }
     }
+
+    private static String getIp() throws SocketException {
+		String ip = "";
+		Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+		while (interfaces.hasMoreElements()) {
+			NetworkInterface iface = interfaces.nextElement();
+			// filters out 127.0.0.1 and inactive interfaces
+			if (iface.isLoopback() || !iface.isUp())
+				continue;
+
+			Enumeration<InetAddress> addresses = iface.getInetAddresses();
+			while (addresses.hasMoreElements()) {
+				InetAddress addr = addresses.nextElement();
+				ip = addr.getHostAddress();
+				//        System.out.println(iface.getDisplayName() + " " + ip);
+			}
+		}
+		return ip;
+	}
 
     private static WebDriver getWebDriver(SupportedWebDriver driverType, DesiredCapabilities capabilities) throws UnsupportedDriverException {
         try {
