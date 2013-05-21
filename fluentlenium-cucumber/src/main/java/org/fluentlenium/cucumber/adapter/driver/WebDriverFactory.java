@@ -36,25 +36,23 @@ import java.util.Map;
 
 public class WebDriverFactory {
     private static Map<SupportedWebDriver, WebDriver> webDriverInstances = new HashMap<SupportedWebDriver, WebDriver>();
-    private static ProxyServer harStorageServer;
 
     public static synchronized WebDriver newWebdriverInstance(FluentCucumberAdapter adapter, SupportedWebDriver driverType, DesiredCapabilities capabilities) throws UnsupportedDriverException {
         String proxyApiPort = (String) capabilities.getCapability("harstorage.api.proxy.port");
         String recordingName = (String) capabilities.getCapability("harstorage.recording.name");
 
         if (adapter.isHarStorageDecorated()) {
-            if (harStorageServer == null) {
-                try {
-                    harStorageServer = new ProxyServer(Integer.valueOf(proxyApiPort));
-                    harStorageServer.start();
-                    Proxy proxy = harStorageServer.seleniumProxy();
-                    proxy.setHttpProxy(getIp() + ":" + proxyApiPort);
-                    capabilities.setCapability(CapabilityType.PROXY, proxy);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    //TODO
-                }
-            }
+			ProxyServer harStorageServer = null;
+			try {
+				harStorageServer = new ProxyServer(Integer.valueOf(proxyApiPort));
+				harStorageServer.start();
+				Proxy proxy = harStorageServer.seleniumProxy();
+				proxy.setHttpProxy(getIp() + ":" + proxyApiPort);
+				capabilities.setCapability(CapabilityType.PROXY, proxy);
+			} catch (Exception e) {
+				e.printStackTrace();
+				//TODO
+			}
 
             //force driver name to firefox
             capabilities.setBrowserName(SupportedWebDriver.FIREFOX.getName());
@@ -65,7 +63,7 @@ public class WebDriverFactory {
             }
 
             harStorageServer.newHar(recordingName);
-            Runtime.getRuntime().addShutdownHook(new HarStorageShutdownHook("fluentLenium-harStorage", harStorageServer, capabilities));
+            Runtime.getRuntime().addShutdownHook(new HarStorageShutdownHook("fluentLenium-harStorage" + proxyApiPort, harStorageServer, capabilities));
         }
 
         if (SharedDriverHelper.isSharedDriverPerFeature(adapter.getClass())) {

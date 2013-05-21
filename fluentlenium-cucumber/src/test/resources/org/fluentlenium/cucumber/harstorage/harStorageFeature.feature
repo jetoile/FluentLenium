@@ -15,6 +15,6 @@ Feature: harstorage test with only one driver instance per feature
     Then I am on harPage
   Examples:
     | browser | parameters                                                                                                                                                                                          |
-        | firefox | harstorage.api.proxy.port@9090;harstorage.recording.name@fluent;harstorage.port@5000;harstorage.host@127.0.0.1 |
+        | firefox | harstorage.api.proxy.port@9091;harstorage.recording.name@fluent2;harstorage.port@5000;harstorage.host@127.0.0.1 |
 #    | remote  | browser.name@firefox;os.name@linux;webdriver.remote.url@http://127.0.0.1:4444/wd/hub;harstorage.api.proxy.port@9090;harstorage.recording.name@fluent;harstorage.port@5000;harstorage.host@127.0.0.1 |
 

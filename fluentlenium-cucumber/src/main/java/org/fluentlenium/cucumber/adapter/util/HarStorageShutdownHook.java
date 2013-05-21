@@ -40,7 +40,7 @@ public class HarStorageShutdownHook extends Thread {
 
             Har har = harStorageServer.getHar();
 
-            String strFilePath = "target/selenium_report.har";
+            String strFilePath = "target/" + getName() + "_selenium_report.har";
             File file = new File(strFilePath);
             if (file.exists()) {
                 file.delete();
